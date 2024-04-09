@@ -1,0 +1,39 @@
+1. loading screen
+2. start page
+3. login page
+4. home page
+5. confirm exit
+
+menu:
+	real time:
+		a. pemasukan
+			-text field
+		b. pengeluaran
+			-kebutuhan
+			-makan
+			-transportasi
+			-hiburan
+			-lainnya (text field)
+		c. utang piutang
+			-text field
+	bulanan:
+		d. anggaran
+			-kebutuhan
+			-makan
+			-transportasi
+			-hiburan
+	sesuai input(dd/mm/yy sampai dd/mm/yy):
+		e. laporan keuangan 
+			-laporan pemasukan dan pengeluaran dalam kurun waktu sebulan
+			-diagram
+			
+	
+garis tiga:
+	1. home
+	2. data harian:
+		-data pemasukan
+		-data pengeluaran
+	3. utang piutang
+	4. anggaran
+	5. laporan
+	6. logout
