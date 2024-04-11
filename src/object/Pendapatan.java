@@ -1,31 +1,31 @@
 package object;
 
 public class Pendapatan {
-    private double pendapatan;
-    private String pendapatandari;
+    private double jumlah;
+    private String sumber;
 
-    public Pendapatan(double pendapatan, String pendapatandari) {
-        this.pendapatan = pendapatan;
-        this.pendapatandari = pendapatandari;
+    public Pendapatan(double jumlah, String sumber) {
+        this.jumlah = jumlah;
+        this.sumber = sumber;
     }
 
     public double getPendapatan() {
-        return pendapatan;
+        return jumlah;
     }
 
-    public void setPendapatan(double pendapatan) {
-        this.pendapatan = pendapatan;
+    public void setPendapatan(double jumlah) {
+        this.jumlah = jumlah;
     }
 
     public String getPendapatanDari() {
-        return pendapatandari;
+        return sumber;
     }
 
-    public void setPendapatanDari(String pendapatandari) {
-        this.pendapatandari = pendapatandari;
+    public void setPendapatanDari(String sumber) {
+        this.sumber = sumber;
     }
     
     public void display(){
-        System.out.println("pendapatan sebesar : " + this.pendapatan + " dari " + this.pendapatandari);
+        System.out.println("pendapatan sebesar : " + this.jumlah + " dari " + this.sumber);
     }
 }

@@ -1,31 +1,31 @@
 package object;
 
 public class Hutang {
-    private double hutang;
-    private String hutangdengan;
+    private double jumlah;
+    private String pemberi;
 
-    public Hutang(double hutang, String hutangdengan) {
-        this.hutang = hutang;
-        this.hutangdengan = hutangdengan;
+    public Hutang(double jumlah, String pemberi) {
+        this.jumlah = jumlah;
+        this.pemberi = pemberi;
     }
 
-    public double getHutang() {
-        return hutang;
+    public double getJumlah() {
+        return jumlah;
     }
 
-    public void setHutang(double hutang) {
-        this.hutang = hutang;
+    public void setJumgetJumlah(double jumlah) {
+        this.jumlah = jumlah;
     }
 
-    public String getHutangDengan() {
-        return hutangdengan;
+    public String getPemberi() {
+        return pemberi;
     }
 
-    public void setHutangDengan(String hutangdengan) {
-        this.hutangdengan = hutangdengan;
+    public void setHutangDengan(String pemberi) {
+        this.pemberi = pemberi;
     }
 
     public void display(){
-        System.out.println("kamu punya hutang, dengan jumlah : " + this.hutang + " kepada " + this.hutangdengan);
+        System.out.println("kamu punya hutang, dengan jumlah : " + this.jumlah + " kepada " + this.pemberi);
     }
 }

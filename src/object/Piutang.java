@@ -1,31 +1,32 @@
 package object;
 
 public class Piutang {
-    private double piutang;
-    private String piutangsiapa;
+    private double jumlah;
+    private String penerima;
 
-    public Piutang(double piutang, String piutangsiapa) {
-        this.piutang = piutang;
-        this.piutangsiapa = piutangsiapa;
+    public Piutang(double jumlah, String penerima) {
+        this.jumlah = jumlah;
+        this.penerima = penerima;
     }
+
 
     public double getPiutang() {
-        return piutang;
+        return jumlah;
     }
 
-    public void setPiutang(double piutang) {
-        this.piutang = piutang;
+    public void setPiutang(double jumlah) {
+        this.jumlah = jumlah;
     }
 
     public String getPiutangSiapa() {
-        return piutangsiapa;
+        return penerima;
     }
 
-    public void serPiutangSiapa(String piutangsiapa) {
-        this.piutangsiapa = piutangsiapa;
+    public void serPiutangSiapa(String penerima) {
+        this.penerima = penerima;
     }
 
     public void display(){
-        System.out.println(this.piutangsiapa + " punya hutang sebesar : " + this.piutang);
+        System.out.println(this.penerima + " punya hutang sebesar : " + this.jumlah);
     }
 }

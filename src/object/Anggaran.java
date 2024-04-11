@@ -1,21 +1,21 @@
 package object;
 
 public class Anggaran {
-    private double anggaran;
+    private double jumlah;
 
-    public Anggaran(double anggaran) {
-        this.anggaran = anggaran;
+    public Anggaran(double jumlah) {
+        this.jumlah = jumlah;
     }
 
-    public double getAnggaran() {
-        return anggaran;
+    public double getJumlah() {
+        return jumlah;
     }
 
-    public void setAnggaran(double anggaran) {
-        this.anggaran = anggaran;
+    public void setJumlah(double jumlah) {
+        this.jumlah = jumlah;
     }
 
     public void display(){
-        System.out.println("anggaran bulan ini adalah : " + this.anggaran);
+        System.out.println("Anggaran bulan ini adalah : " + this.jumlah);
     }
 }

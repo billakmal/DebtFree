@@ -1,31 +1,31 @@
 package object;
 
 public class Pengeluaran {
-    private double pengeluaran;
-    private String pengeluaranuntuk;
-    
-    public Pengeluaran (double pengeluaran, String pengeluaranuntuk) {
-        this.pengeluaran = pengeluaran;
-        this.pengeluaranuntuk = pengeluaranuntuk;
+    private double jumlah;
+    private String keterangan;
+
+    public Pengeluaran(double jumlah, String keterangan) {
+        this.jumlah = jumlah;
+        this.keterangan = keterangan;
     }
 
     public double getPengeluaran() {
-        return pengeluaran;
+        return jumlah;
     }
 
-    public void setPengeluaran(double pengeluaran) {
-        this.pengeluaran = pengeluaran;
+    public void setPengeluaran(double jumlah) {
+        this.jumlah = jumlah;
     }
 
     public String getPengeluaranUntuk() {
-        return pengeluaranuntuk;
+        return keterangan;
     }
 
-    public void setPengeluaranUntuk(String pengeluaranuntuk) {
-        this.pengeluaranuntuk = pengeluaranuntuk;
+    public void setPengeluaranUntuk(String keterangan) {
+        this.keterangan = keterangan;
     }
 
     public void display(){
-        System.out.println("melakukan pengeluaran sebesar : " + this.pengeluaran + " untuk " + this.pengeluaranuntuk);
+        System.out.println("melakukan pengeluaran sebesar : " + this.jumlah + " untuk " + this.keterangan);
     }
 }
