@@ -18,4 +18,8 @@ public class Anggaran {
     public void display(){
         System.out.println("Anggaran bulan ini adalah : " + this.jumlah);
     }
+
+    public void tampilkanAnggaran() {
+        System.out.println("Anggaran Anda adalah: " + this.jumlah);
+    }
 }

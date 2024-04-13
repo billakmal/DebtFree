@@ -1,8 +1,11 @@
 package object;
 
+import java.util.List;
+
 public class Pengeluaran {
     private double jumlah;
     private String keterangan;
+    private List<Pengeluaran> daftarPengeluaran;
 
     public Pengeluaran(double jumlah, String keterangan) {
         this.jumlah = jumlah;
@@ -27,5 +30,9 @@ public class Pengeluaran {
 
     public void display(){
         System.out.println("melakukan pengeluaran sebesar : " + this.jumlah + " untuk " + this.keterangan);
+    }
+
+    public void tambahPengeluaran(Pengeluaran pengeluaran) {
+        this.daftarPengeluaran.add(pengeluaran);
     }
 }

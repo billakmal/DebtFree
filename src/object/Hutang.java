@@ -1,8 +1,11 @@
 package object;
 
+import java.util.List;
+
 public class Hutang {
     private double jumlah;
     private String pemberi;
+    private List<Hutang> daftarHutang;
 
     public Hutang(double jumlah, String pemberi) {
         this.jumlah = jumlah;
@@ -13,7 +16,7 @@ public class Hutang {
         return jumlah;
     }
 
-    public void setJumgetJumlah(double jumlah) {
+    public void setJumlah(double jumlah) {
         this.jumlah = jumlah;
     }
 
@@ -21,11 +24,18 @@ public class Hutang {
         return pemberi;
     }
 
-    public void setHutangDengan(String pemberi) {
+    public void setPemberi(String pemberi) {
         this.pemberi = pemberi;
     }
 
     public void display(){
         System.out.println("kamu punya hutang, dengan jumlah : " + this.jumlah + " kepada " + this.pemberi);
+    }
+
+    public void tampilkanDaftarHutang() {
+        System.out.println("===== Daftar Hutang =====");
+        for (Hutang hutang : daftarHutang) {
+            System.out.println("Hutang kepada " + hutang.getPemberi() + ": " + hutang.getJumlah());
+        }
     }
 }
