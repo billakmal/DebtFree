@@ -31,22 +31,16 @@
             this.daftarPengeluaran.add(pengeluaran);
         }
 
-        public void tampilkanAnggaran() {
-            System.out.println("Anggaran Anda adalah: " + anggaran.getJumlah());
+        public void tambahHutang(Hutang hutang) {
+            this.daftarHutang.add(hutang);
         }
 
-        public void tampilkanDaftarHutang() {
-            System.out.println("===== Daftar Hutang =====");
-            for (Hutang hutang : daftarHutang) {
-                System.out.println("Hutang kepada " + hutang.getPemberi() + ": " + hutang.getJumlah());
-            }
+        public void tambahPiutang(Piutang piutang) {
+            this.daftarPiutang.add(piutang);
         }
-        
-        public void tampilkanDaftarPiutang() {
-            System.out.println("===== Daftar Piutang =====");
-            for (Piutang piutang : daftarPiutang) {
-                System.out.println("Piutang dari " + piutang.getPenerima() + ": " + piutang.getJumlah());
-            }
+
+        public void tampilkanAnggaran() {
+            System.out.println("Anggaran Anda adalah: " + anggaran.getJumlah());
         }
 
         public String getName() {
@@ -71,6 +65,22 @@
 
         public void setPassWord(String password) {
             this.password = password;
+        }
+
+        public List<Pendapatan> getDaftarPendapatan() {
+            return this.daftarPendapatan;
+        }
+
+        public List<Pengeluaran> getDaftarPengeluaran() {
+            return this.daftarPengeluaran;
+        }
+
+        public List<Hutang> getDaftarHutang() {
+            return this.daftarHutang;
+        }
+
+        public List<Piutang> getDaftarPiutang() {
+            return this.daftarPiutang;
         }
 
         public void display(){

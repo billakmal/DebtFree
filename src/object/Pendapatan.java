@@ -12,19 +12,19 @@ public class Pendapatan {
         this.sumber = sumber;
     }
 
-    public double getPendapatan() {
+    public double getJumlah() {
         return jumlah;
     }
 
-    public void setPendapatan(double jumlah) {
+    public void setJumlah(double jumlah) {
         this.jumlah = jumlah;
     }
 
-    public String getPendapatanDari() {
+    public String getSumber() {
         return sumber;
     }
 
-    public void setPendapatanDari(String sumber) {
+    public void setSumber(String sumber) {
         this.sumber = sumber;
     }
     

@@ -12,19 +12,19 @@ public class Pengeluaran {
         this.keterangan = keterangan;
     }
 
-    public double getPengeluaran() {
+    public double getJumlah() {
         return jumlah;
     }
 
-    public void setPengeluaran(double jumlah) {
+    public void setJumlah(double jumlah) {
         this.jumlah = jumlah;
     }
 
-    public String getPengeluaranUntuk() {
+    public String getKeterangan() {
         return keterangan;
     }
 
-    public void setPengeluaranUntuk(String keterangan) {
+    public void setKeterangan(String keterangan) {
         this.keterangan = keterangan;
     }
 
