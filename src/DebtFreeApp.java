@@ -5,6 +5,11 @@ import object.Hutang;
 import object.Piutang;
 import java.util.Scanner;
 import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.ResultSet;
 
 public class DebtFreeApp {
 
@@ -13,37 +18,58 @@ public class DebtFreeApp {
 
     public static void main(String[] args) {
 
-        loginUser();
+        Connection conn = null;
+        try {
+            String url = "jdbc:mysql://localhost:3306/DebtFree";
+            String user = "root";
+            String password = "ribihu";
+            conn = DriverManager.getConnection(url, user, password);
+            System.out.println("Koneksi ke database berhasil.");
 
-        boolean berjalan = true;
-        while (berjalan) {
-            tampilkanMenuUtama();
-            int pilihan = scanner.nextInt();
-            switch (pilihan) {
-                case 1:
-                    menuPendapatan();
-                    break;
-                case 2:
-                    menuPengeluaran();
-                    break;
-                case 3:
-                    lihatAnggaran();
-                    break;
-                case 4:
-                    menuHutang();
-                    break;
-                case 5:
-                    menuPiutang();
-                    break;
-                case 6:
-                    keluarAplikasi();
-                    berjalan = false;
-                    break;
-                default:
-                    System.out.println("Pilihan tidak valid.");
+            loginUser();
+
+            boolean berjalan = true;
+            while (berjalan) {
+                tampilkanMenuUtama();
+                int pilihan = scanner.nextInt();
+                switch (pilihan) {
+                    case 1:
+                        menuPendapatan();
+                        break;
+                    case 2:
+                        menuPengeluaran();
+                        break;
+                    case 3:
+                        lihatAnggaran();
+                        break;
+                    case 4:
+                        menuHutang();
+                        break;
+                    case 5:
+                        menuPiutang();
+                        break;
+                    case 6:
+                        keluarAplikasi();
+                        berjalan = false;
+                        break;
+                    default:
+                        System.out.println("Pilihan tidak valid.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
+
 
     private static void loginUser() {
         System.out.print("Masukkan nama pengguna: ");
