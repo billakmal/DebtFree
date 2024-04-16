@@ -1,0 +1,493 @@
+import object.User;
+import object.Pendapatan;
+import object.Pengeluaran;
+import object.Hutang;
+import object.Piutang;
+import java.util.Scanner;
+import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class DebtFreeApp {
+
+    private static Scanner scanner = new Scanner(System.in);
+    private static User currentUser;
+
+    public static void main(String[] args) {
+
+        Connection conn = null;
+        try {
+            String url = "jdbc:mysql://localhost:3306/DebtFree";
+            String user = "root";
+            String password = "ribihu";
+            conn = DriverManager.getConnection(url, user, password);
+            System.out.println("Koneksi ke database berhasil.");
+
+            loginUser(conn);
+
+            boolean berjalan = true;
+            while (berjalan) {
+                tampilkanMenuUtama();
+                int pilihan = scanner.nextInt();
+                switch (pilihan) {
+                    case 1:
+                        menuPendapatan(conn);
+                        break;
+                    case 2:
+                        menuPengeluaran(conn);
+                        break;
+                    case 3:
+                        lihatAnggaran(conn);
+                        break;
+                    case 4:
+                        menuHutang(conn);
+                        break;
+                    case 5:
+                        menuPiutang(conn);
+                        break;
+                    case 6:
+                        keluarAplikasi(conn);
+                        berjalan = false;
+                        break;
+                    default:
+                        System.out.println("Pilihan tidak valid.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private static void loginUser(Connection conn) {
+        System.out.print("Masukkan nama pengguna: ");
+        String nama = scanner.nextLine();
+        System.out.print("Masukkan email pengguna: ");
+        String email = scanner.nextLine();
+        System.out.print("Masukan password pengguna: ");
+        String password = scanner.nextLine();
+
+        try {
+            String sql = "SELECT * FROM users WHERE nama = ? AND email = ? AND password = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, nama);
+            stmt.setString(2, email);
+            stmt.setString(3, password);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                currentUser = new User(rs.getInt("id"), nama, email, password);
+                System.out.println("Login berhasil sebagai " + currentUser.getName());
+            } else {
+                System.out.println("Nama pengguna, email, atau password salah.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void tampilkanMenuUtama() {
+        System.out.println("===== Menu Utama =====");
+        System.out.println("1. Menu Pendapatan");
+        System.out.println("2. Menu Pengeluaran");
+        System.out.println("3. Lihat Anggaran");
+        System.out.println("4. Menu Hutang");
+        System.out.println("5. Menu Piutang");
+        System.out.println("6. Keluar");
+        System.out.print("Pilihan Anda: ");
+    }
+
+    private static void menuPendapatan(Connection conn) {
+        boolean menuPendapatanBerjalan = true;
+        while (menuPendapatanBerjalan) {
+            tampilkanMenuPendapatan();
+            int pilihanPendapatan = scanner.nextInt();
+            switch (pilihanPendapatan) {
+                case 1:
+                    tambahPendapatan(conn);
+                    break;
+                case 2:
+                    lihatPendapatan(conn);
+                    break;
+                case 3:
+                    menuPendapatanBerjalan = false;
+                    break;
+                default:
+                    System.out.println("Pilihan tidak valid.");
+            }
+        }
+    }
+
+    private static void menuPengeluaran(Connection conn) {
+        boolean menuPengeluaranBerjalan = true;
+        while (menuPengeluaranBerjalan) {
+            tampilkanMenuPengeluaran();
+            int pilihanPengeluaran = scanner.nextInt();
+            switch (pilihanPengeluaran) {
+                case 1:
+                    tambahPengeluaran(conn);
+                    break;
+                case 2:
+                    lihatPengeluaran(conn);
+                    break;
+                case 3:
+                    menuPengeluaranBerjalan = false;
+                    break;
+                default:
+                    System.out.println("Pilihan tidak valid.");
+            }
+        }
+    }
+    
+    private static void menuHutang(Connection conn) {
+        boolean menuHutangBerjalan = true;
+        while (menuHutangBerjalan) {
+            tampilkanMenuHutang();
+            int pilihanHutang = scanner.nextInt();
+            switch (pilihanHutang) {
+                case 1:
+                    tambahHutang(conn);
+                    break;
+                case 2:
+                    lihatHutang(conn);
+                    break;
+                case 3:
+                    menuHutangBerjalan = false;
+                    break;
+                default:
+                    System.out.println("Pilihan tidak valid.");
+            }
+        }
+    }
+    
+    private static void menuPiutang(Connection conn) {
+        boolean menuPiutangBerjalan = true;
+        while (menuPiutangBerjalan) {
+            tampilkanMenuPiutang();
+            int pilihanPiutang = scanner.nextInt();
+            switch (pilihanPiutang) {
+                case 1:
+                    tambahPiutang(conn);
+                    break;
+                case 2:
+                    lihatPiutang(conn);
+                    break;
+                case 3:
+                    menuPiutangBerjalan = false;
+                    break;
+                default:
+                    System.out.println("Pilihan tidak valid.");
+            }
+        }
+    }
+    
+    private static void tampilkanMenuPendapatan() {
+        System.out.println("===== Menu Pendapatan =====");
+        System.out.println("1. Tambah Pendapatan");
+        System.out.println("2. Lihat Pendapatan");
+        System.out.println("3. Kembali");
+        System.out.print("Pilihan Anda: ");
+    }
+    
+    private static void tampilkanMenuPengeluaran() {
+        System.out.println("===== Menu Pengeluaran =====");
+        System.out.println("1. Tambah Pengeluaran");
+        System.out.println("2. Lihat Pengeluaran");
+        System.out.println("3. Kembali");
+        System.out.print("Pilihan Anda: ");
+    }
+    
+    private static void tampilkanMenuHutang() {
+        System.out.println("===== Menu Hutang =====");
+        System.out.println("1. Tambah Hutang");
+        System.out.println("2. Lihat Hutang");
+        System.out.println("3. Kembali");
+        System.out.print("Pilihan Anda: ");
+    }
+    
+    private static void tampilkanMenuPiutang() {
+        System.out.println("===== Menu Piutang =====");
+        System.out.println("1. Tambah Piutang");
+        System.out.println("2. Lihat Piutang");
+        System.out.println("3. Kembali");
+        System.out.print("Pilihan Anda: ");
+    }
+    
+    private static void tambahPendapatan(Connection conn) {
+        System.out.print("Masukkan jumlah pendapatan: ");
+        double jumlah = scanner.nextDouble();
+        scanner.nextLine();
+        System.out.print("Masukkan sumber pendapatan: ");
+        String sumber = scanner.nextLine();
+    
+        try {
+            String sql = "INSERT INTO pendapatan (user_id, jumlah, sumber) VALUES (?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, currentUser.getId());
+            stmt.setDouble(2, jumlah);
+            stmt.setString(3, sumber);
+            stmt.executeUpdate();
+    
+            System.out.println("Pendapatan berhasil ditambahkan.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void lihatPendapatan(Connection conn) {
+        System.out.println("===== Daftar Pendapatan =====");
+    
+        try {
+            String sql = "SELECT * FROM pendapatan WHERE user_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, currentUser.getId());
+            ResultSet rs = stmt.executeQuery();
+    
+            if (rs.isEmpty()) {
+                System.out.println("Tidak ada pendapatan yang tersedia.");
+            } else {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    double jumlah = rs.getDouble("jumlah");
+                    String sumber = rs.getString("sumber");
+                    System.out.println("Pendapatan ke-" + id + ":");
+                    System.out.println("Jumlah: " + jumlah);
+                    System.out.println("Sumber: " + sumber);
+                    System.out.println();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void tambahPengeluaran(Connection conn) {
+        System.out.print("Masukkan jumlah pengeluaran: ");
+        double jumlah = scanner.nextDouble();
+        scanner.nextLine();
+        System.out.print("Masukkan keterangan pengeluaran: ");
+        String keterangan = scanner.nextLine();
+    
+        try {
+            String sql = "INSERT INTO pengeluaran (user_id, jumlah, keterangan) VALUES (?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, currentUser.getId());
+            stmt.setDouble(2, jumlah);
+            stmt.setString(3, keterangan);
+            stmt.executeUpdate();
+    
+            System.out.println("Pengeluaran berhasil ditambahkan.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void lihatPengeluaran(Connection conn) {
+        System.out.println("===== Daftar Pengeluaran =====");
+    
+        try {
+            String sql = "SELECT * FROM pengeluaran WHERE user_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, currentUser.getId());
+            ResultSet rs = stmt.executeQuery();
+    
+            if (rs.isEmpty()) {
+                System.out.println("Tidak ada pengeluaran yang tersedia.");
+            } else {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    double jumlah = rs.getDouble("jumlah");
+                    String keterangan = rs.getString("keterangan");
+                    System.out.println("Pengeluaran ke-" + id + ":");
+                    System.out.println("Jumlah: " + jumlah);
+                    System.out.println("Keterangan: " + keterangan);
+                    System.out.println();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void tambahHutang(Connection conn) {
+        System.out.print("Masukkan jumlah hutang: ");
+        double jumlah = scanner.nextDouble();
+        scanner.nextLine();
+        System.out.print("Siapa pemberi hutang: ");
+        String pemberi = scanner.nextLine();
+    
+        try {
+            String sql = "INSERT INTO hutang (user_id, jumlah, pemberi) VALUES (?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, currentUser.getId());
+            stmt.setDouble(2, jumlah);
+            stmt.setString(3, pemberi);
+            stmt.executeUpdate();
+    
+            System.out.println("Hutang berhasil ditambahkan.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void lihatHutang(Connection conn) {
+        System.out.println("===== Daftar Hutang =====");
+    
+        try {
+            String sql = "SELECT * FROM hutang WHERE user_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, currentUser.getId());
+            ResultSet rs = stmt.executeQuery();
+    
+            if (rs.isEmpty()) {
+                System.out.println("Tidak ada Hutang yang tersedia.");
+            } else {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    double jumlah = rs.getDouble("jumlah");
+                    String pemberi = rs.getString("pemberi");
+                    System.out.println("Hutang ke-" + id + ":");
+                    System.out.println("Jumlah: " + jumlah);
+                    System.out.println("Pemberi: " + pemberi);
+                    System.out.println();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void tambahPiutang(Connection conn) {
+        System.out.print("Masukkan jumlah piutang: ");
+        double jumlah = scanner.nextDouble();
+        scanner.nextLine();
+        System.out.print("Siapa penerima piutang: ");
+        String penerima = scanner.nextLine();
+    
+        try {
+            String sql = "INSERT INTO piutang (user_id, jumlah, penerima) VALUES (?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, currentUser.getId());
+            stmt.setDouble(2, jumlah);
+            stmt.setString(3, penerima);
+            stmt.executeUpdate();
+    
+            System.out.println("Piutang berhasil ditambahkan.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void lihatPiutang(Connection conn) {
+        System.out.println("===== Daftar Piutang =====");
+    
+        try {
+            String sql = "SELECT * FROM piutang WHERE user_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, currentUser.getId());
+            ResultSet rs = stmt.executeQuery();
+    
+            if (rs.isEmpty()) {
+                System.out.println("Tidak ada Piutang yang tersedia.");
+            } else {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    double jumlah = rs.getDouble("jumlah");
+                    String penerima = rs.getString("penerima");
+                    System.out.println("Piutang ke-" + id + ":");
+                    System.out.println("Jumlah: " + jumlah);
+                    System.out.println("Penerima: " + penerima);
+                    System.out.println();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void lihatAnggaran(Connection conn) {
+        System.out.println("===== Lihat Anggaran =====");
+    
+        double totalPendapatan = 0;
+        double totalPengeluaran = 0;
+        double totalHutang = 0;
+        double totalPiutang = 0;
+    
+        try {
+            // Hitung total pendapatan
+            String sqlPendapatan = "SELECT SUM(jumlah) AS total FROM pendapatan WHERE user_id = ?";
+            PreparedStatement stmtPendapatan = conn.prepareStatement(sqlPendapatan);
+            stmtPendapatan.setInt(1, currentUser.getId());
+            ResultSet rsPendapatan = stmtPendapatan.executeQuery();
+            if (rsPendapatan.next()) {
+                totalPendapatan = rsPendapatan.getDouble("total");
+            }
+    
+            // Hitung total pengeluaran
+            String sqlPengeluaran = "SELECT SUM(jumlah) AS total FROM pengeluaran WHERE user_id = ?";
+            PreparedStatement stmtPengeluaran = conn.prepareStatement(sqlPengeluaran);
+            stmtPengeluaran.setInt(1, currentUser.getId());
+            ResultSet rsPengeluaran = stmtPengeluaran.executeQuery();
+            if (rsPengeluaran.next()) {
+                totalPengeluaran = rsPengeluaran.getDouble("total");
+            }
+    
+            // Hitung total hutang
+            String sqlHutang = "SELECT SUM(jumlah) AS total FROM hutang WHERE user_id = ?";
+            PreparedStatement stmtHutang = conn.prepareStatement(sqlHutang);
+            stmtHutang.setInt(1, currentUser.getId());
+            ResultSet rsHutang = stmtHutang.executeQuery();
+            if (rsHutang.next()) {
+                totalHutang = rsHutang.getDouble("total");
+            }
+    
+            // Hitung total piutang
+            String sqlPiutang = "SELECT SUM(jumlah) AS total FROM piutang WHERE user_id = ?";
+            PreparedStatement stmtPiutang = conn.prepareStatement(sqlPiutang);
+            stmtPiutang.setInt(1, currentUser.getId());
+            ResultSet rsPiutang = stmtPiutang.executeQuery();
+            if (rsPiutang.next()) {
+                totalPiutang = rsPiutang.getDouble("total");
+            }
+    
+            // Hitung anggaran
+            double anggaran = totalPendapatan - (totalPengeluaran + totalHutang) + totalPiutang;
+    
+            System.out.println("Pendapatan: " + totalPendapatan);
+            System.out.println("Pengeluaran: " + totalPengeluaran);
+            System.out.println("Hutang: " + totalHutang);
+            System.out.println("Piutang: " + totalPiutang);
+            System.out.println("Anggaran: " + anggaran);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void keluarAplikasi(Connection conn) {
+        System.out.println("Keluar dari aplikasi");
+    
+        // Tutup koneksi database
+        try {
+            if (conn != null) {
+                conn.close();
+                System.out.println("Koneksi database ditutup.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    
+        System.out.println("Terima kasih telah menggunakan DebtFreeApp.");
+        System.exit(0);
+    }
+}
