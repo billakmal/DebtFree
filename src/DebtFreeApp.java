@@ -121,6 +121,10 @@ private static void tampilkanMenuUtama() {
     boolean berjalan = true;
     while (berjalan) {
         System.out.println("===== Menu Utama =====");
+        double totalPendapatan = getTotalPendapatan();
+        double totalPengeluaran = getTotalPengeluaran();
+        double danaSaatIni = totalPendapatan - totalPengeluaran;
+        System.out.println("Saldo Saat Ini : " + danaSaatIni);
         System.out.println("1. Menu Pendapatan");
         System.out.println("2. Menu Pengeluaran");
         System.out.println("3. Menu Hutang");
@@ -128,7 +132,7 @@ private static void tampilkanMenuUtama() {
         System.out.println("5. Keluar");
         System.out.print("Pilihan Anda: ");
         int pilihan = scanner.nextInt();
-        scanner.nextLine(); // Baca newline
+        scanner.nextLine(); 
 
         switch (pilihan) {
             case 1:
@@ -475,6 +479,38 @@ private static void tampilkanMenuUtama() {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+
+        private static double getTotalPendapatan() {
+            double totalPendapatan = 0;
+            try {
+                String sql = "SELECT SUM(jumlah_pendapatan) AS total FROM pendapatan WHERE user_id = ?";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, currentUser.getId());
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    totalPendapatan = resultSet.getDouble("total");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return totalPendapatan;
+        }
+
+        private static double getTotalPengeluaran() {
+            double totalPengeluaran = 0;
+            try {
+                String sql = "SELECT SUM(jumlah_pengeluaran) AS total FROM pengeluaran WHERE user_id = ?";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, currentUser.getId());
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    totalPengeluaran = resultSet.getDouble("total");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return totalPengeluaran;
         }
 
         private static void keluarAplikasi() {
