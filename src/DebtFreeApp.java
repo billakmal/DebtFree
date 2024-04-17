@@ -1,10 +1,5 @@
     import object.User;
-    import object.Pendapatan;
-    import object.Pengeluaran;
-    import object.Hutang;
-    import object.Piutang;
     import java.util.Scanner;
-    import java.util.List;
     import java.sql.Connection;
     import java.sql.DriverManager;
     import java.sql.SQLException;
@@ -37,7 +32,7 @@
                 System.out.println("3. Keluar");
                 System.out.print("Pilihan Anda: ");
                 int pilihan = scanner.nextInt();
-                scanner.nextLine(); // Baca newline
+                scanner.nextLine();
 
                 switch (pilihan) {
                     case 1:
@@ -75,7 +70,7 @@
         String kataSandi = scanner.nextLine();
 
         try {
-            String sql = "SELECT * FROM user WHERE (name = ? OR email = ?) AND password = ?";
+            String sql = "SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?";
             preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, userInput);
             preparedStatement.setString(2, userInput);
@@ -83,8 +78,10 @@
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                String namaPengguna = resultSet.getString("name");
+                String namaPengguna = resultSet.getString("username");
                 System.out.println("Login berhasil sebagai " + namaPengguna);
+                currentUser = new User(namaPengguna, sql, namaPengguna);
+                currentUser.setId(resultSet.getInt("user_id")); 
                 tampilkanMenuUtama();
             } else {
                 System.out.println("Nama pengguna, email, atau kata sandi salah.");
@@ -104,7 +101,7 @@
         String kataSandi = scanner.nextLine();
 
         try {
-            String sql = "INSERT INTO user (name, email, password) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
             preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, nama);
             preparedStatement.setString(2, email);
@@ -126,10 +123,9 @@ private static void tampilkanMenuUtama() {
         System.out.println("===== Menu Utama =====");
         System.out.println("1. Menu Pendapatan");
         System.out.println("2. Menu Pengeluaran");
-        System.out.println("3. Lihat Anggaran");
-        System.out.println("4. Menu Hutang");
-        System.out.println("5. Menu Piutang");
-        System.out.println("6. Keluar");
+        System.out.println("3. Menu Hutang");
+        System.out.println("4. Menu Piutang");
+        System.out.println("5. Keluar");
         System.out.print("Pilihan Anda: ");
         int pilihan = scanner.nextInt();
         scanner.nextLine(); // Baca newline
@@ -142,15 +138,12 @@ private static void tampilkanMenuUtama() {
                 menuPengeluaran();
                 break;
             case 3:
-                lihatAnggaran();
-                break;
-            case 4:
                 menuHutang();
                 break;
-            case 5:
+            case 4:
                 menuPiutang();
                 break;
-            case 6:
+            case 5:
                 keluarAplikasi();
                 berjalan = false;
                 break;
@@ -277,116 +270,211 @@ private static void tampilkanMenuUtama() {
         }
 
         private static void tambahPendapatan() {
-            System.out.print("Masukkan jumlah pendapatan: ");
-            double jumlah = scanner.nextDouble();
-            scanner.nextLine();
-            System.out.print("Masukkan sumber pendapatan: ");
-            String sumber = scanner.nextLine();
-            Pendapatan pendapatanBaru = new Pendapatan(jumlah, sumber);
-            currentUser.tambahPendapatan(pendapatanBaru);
-            System.out.println("Pendapatan berhasil ditambahkan.");
+            try {
+                System.out.print("Masukkan jumlah pendapatan: ");
+                double jumlah = scanner.nextDouble();
+                scanner.nextLine();
+                System.out.print("Masukkan sumber pendapatan: ");
+                String sumber = scanner.nextLine();
+        
+                String sql = "INSERT INTO pendapatan (user_id, jumlah_pendapatan, sumber_pendapatan) VALUES (?, ?, ?)";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, currentUser.getId());
+                preparedStatement.setDouble(2, jumlah);
+                preparedStatement.setString(3, sumber);
+        
+                int rowsInserted = preparedStatement.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Pendapatan berhasil ditambahkan.");
+                } else {
+                    System.out.println("Gagal menambahkan pendapatan.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         private static void lihatPendapatan() {
             System.out.println("===== Daftar Pendapatan =====");
-            List<Pendapatan> daftarPendapatan = currentUser.getDaftarPendapatan();
-            if (daftarPendapatan.isEmpty()) {
-                System.out.println("Tidak ada pendapatan yang tersedia.");
-            } else {
-                for (int i = 0; i < daftarPendapatan.size(); i++) {
-                    Pendapatan pendapatan = daftarPendapatan.get(i);
-                    System.out.println("Pendapatan ke-" + (i + 1) + ":");
-                    System.out.println("Jumlah: " + pendapatan.getJumlah());
-                    System.out.println("Sumber: " + pendapatan.getSumber());
+            try {
+                String sql = "SELECT * FROM pendapatan WHERE user_id = ?";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, currentUser.getId());
+                ResultSet resultSet = preparedStatement.executeQuery();
+        
+                int count = 0;
+                while (resultSet.next()) {
+                    count++;
+                    double jumlah = resultSet.getDouble("jumlah_pendapatan");
+                    String sumber = resultSet.getString("sumber_pendapatan");
+                    System.out.println("Pendapatan ke-" + count + ":");
+                    System.out.println("Jumlah: " + jumlah);
+                    System.out.println("Sumber: " + sumber);
                     System.out.println();
                 }
+        
+                if (count == 0) {
+                    System.out.println("Tidak ada pendapatan yang tersedia.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
 
         private static void tambahPengeluaran() {
-            System.out.print("Masukkan jumlah pengeluaran: ");
-            double jumlah = scanner.nextDouble();
-            scanner.nextLine();
-            System.out.print("Masukkan keterangan pengeluaran: ");
-            String keterangan = scanner.nextLine();
-            Pengeluaran pengeluaranBaru = new Pengeluaran(jumlah, keterangan);
-            currentUser.tambahPengeluaran(pengeluaranBaru);
-            System.out.println("Pengeluaran berhasil ditambahkan.");
+            try {
+                System.out.print("Masukkan jumlah pengeluaran: ");
+                double jumlah = scanner.nextDouble();
+                scanner.nextLine();
+                System.out.print("Masukkan keterangan pengeluaran: ");
+                String keterangan = scanner.nextLine();
+        
+                String sql = "INSERT INTO pengeluaran (user_id, jumlah_pengeluaran, keterangan_pengeluaran) VALUES (?, ?, ?)";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, currentUser.getId());
+                preparedStatement.setDouble(2, jumlah);
+                preparedStatement.setString(3, keterangan);
+        
+                int rowsInserted = preparedStatement.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Pengeluaran berhasil ditambahkan.");
+                } else {
+                    System.out.println("Gagal menambahkan pengeluaran.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
+        
         private static void lihatPengeluaran() {
             System.out.println("===== Daftar Pengeluaran =====");
-            List<Pengeluaran> daftarPengeluaran = currentUser.getDaftarPengeluaran();
-            if (daftarPengeluaran.isEmpty()) {
-                System.out.println("Tidak ada pengeluaran yang tersedia.");
-            } else {
-                for (int i = 0; i < daftarPengeluaran.size(); i++) {
-                    Pengeluaran pengeluaran = daftarPengeluaran.get(i);
-                    System.out.println("Pengeluaran ke-" + (i + 1) + ":");
-                    System.out.println("Jumlah: " + pengeluaran.getJumlah());
-                    System.out.println("Keterangan: " + pengeluaran.getKeterangan());
+            try {
+                String sql = "SELECT * FROM pengeluaran WHERE user_id = ?";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, currentUser.getId());
+                ResultSet resultSet = preparedStatement.executeQuery();
+        
+                int count = 0;
+                while (resultSet.next()) {
+                    count++;
+                    double jumlah = resultSet.getDouble("jumlah_pengeluaran");
+                    String keterangan = resultSet.getString("keterangan_pengeluaran");
+                    System.out.println("Pengeluaran ke-" + count + ":");
+                    System.out.println("Jumlah: " + jumlah);
+                    System.out.println("Keterangan: " + keterangan);
                     System.out.println();
                 }
+        
+                if (count == 0) {
+                    System.out.println("Tidak ada pengeluaran yang tersedia.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
 
         private static void tambahHutang() {
-            System.out.print("Masukkan jumlah hutang: ");
-            double jumlah = scanner.nextDouble();
-            scanner.nextLine();
-            System.out.print("Siapa pemberi hutang: ");
-            String pemberi = scanner.nextLine();
-            Hutang hutangBaru = new Hutang(jumlah, pemberi);
-            currentUser.tambahHutang(hutangBaru);
-            System.out.println("hutang berhasil ditambahkan.");
+            try {
+                System.out.print("Masukkan jumlah hutang: ");
+                double jumlah = scanner.nextDouble();
+                scanner.nextLine();
+                System.out.print("Masukkan pemberi hutang: ");
+                String pemberi = scanner.nextLine();
+        
+                String sql = "INSERT INTO hutang (user_id, jumlah_hutang, pemberi_hutang) VALUES (?, ?, ?)";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, currentUser.getId());
+                preparedStatement.setDouble(2, jumlah);
+                preparedStatement.setString(3, pemberi);
+        
+                int rowsInserted = preparedStatement.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Hutang berhasil ditambahkan.");
+                } else {
+                    System.out.println("Gagal menambahkan hutang.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
+        
         private static void lihatHutang() {
             System.out.println("===== Daftar Hutang =====");
-            List<Hutang> daftarHutang = currentUser.getDaftarHutang();
-            if (daftarHutang.isEmpty()) {
-                System.out.println("Tidak ada Hutang yang tersedia.");
-            } else {
-                for (int i = 0; i < daftarHutang.size(); i++) {
-                    Hutang Hutang = daftarHutang.get(i);
-                    System.out.println("Hutang ke-" + (i + 1) + ":");
-                    System.out.println("Jumlah: " + Hutang.getJumlah());
-                    System.out.println("Pemberi: " + Hutang.getPemberi());
+            try {
+                String sql = "SELECT * FROM hutang WHERE user_id = ?";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, currentUser.getId());
+                ResultSet resultSet = preparedStatement.executeQuery();
+        
+                int count = 0;
+                while (resultSet.next()) {
+                    count++;
+                    double jumlah = resultSet.getDouble("jumlah_hutang");
+                    String pemberi = resultSet.getString("pemberi_hutang");
+                    System.out.println("Hutang ke-" + count + ":");
+                    System.out.println("Jumlah: " + jumlah);
+                    System.out.println("Pemberi: " + pemberi);
                     System.out.println();
                 }
+        
+                if (count == 0) {
+                    System.out.println("Tidak ada hutang yang tersedia.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
-
+        
         private static void tambahPiutang() {
-            System.out.print("Masukkan jumlah piutang: ");
-            double jumlah = scanner.nextDouble();
-            scanner.nextLine();
-            System.out.print("Siapa penerima piutang: ");
-            String penerima = scanner.nextLine();
-            Piutang piutangBaru = new Piutang(jumlah, penerima);
-            currentUser.tambahPiutang(piutangBaru);
-            System.out.println("piutang berhasil ditambahkan.");
+            try {
+                System.out.print("Masukkan jumlah piutang: ");
+                double jumlah = scanner.nextDouble();
+                scanner.nextLine();
+                System.out.print("Masukkan penerima piutang: ");
+                String penerima = scanner.nextLine();
+        
+                String sql = "INSERT INTO piutang (user_id, jumlah_piutang, penerima_piutang) VALUES (?, ?, ?)";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, currentUser.getId());
+                preparedStatement.setDouble(2, jumlah);
+                preparedStatement.setString(3, penerima);
+        
+                int rowsInserted = preparedStatement.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("Piutang berhasil ditambahkan.");
+                } else {
+                    System.out.println("Gagal menambahkan piutang.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
+        
         private static void lihatPiutang() {
             System.out.println("===== Daftar Piutang =====");
-            List<Piutang> daftarPiutang = currentUser.getDaftarPiutang();
-            if (daftarPiutang.isEmpty()) {
-                System.out.println("Tidak ada Piutang yang tersedia.");
-            } else {
-                for (int i = 0; i < daftarPiutang.size(); i++) {
-                    Piutang Piutang = daftarPiutang.get(i);
-                    System.out.println("Piutang ke-" + (i + 1) + ":");
-                    System.out.println("Jumlah: " + Piutang.getJumlah());
-                    System.out.println("Pemberi: " + Piutang.getPenerima());
+            try {
+                String sql = "SELECT * FROM piutang WHERE user_id = ?";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, currentUser.getId());
+                ResultSet resultSet = preparedStatement.executeQuery();
+        
+                int count = 0;
+                while (resultSet.next()) {
+                    count++;
+                    double jumlah = resultSet.getDouble("jumlah_piutang");
+                    String penerima = resultSet.getString("penerima_piutang");
+                    System.out.println("Piutang ke-" + count + ":");
+                    System.out.println("Jumlah: " + jumlah);
+                    System.out.println("Penerima: " + penerima);
                     System.out.println();
                 }
+        
+                if (count == 0) {
+                    System.out.println("Tidak ada piutang yang tersedia.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        }
-
-        private static void lihatAnggaran() {
-            // Tambahkan logika untuk melihat anggaran
-            System.out.println("Lihat anggaran");
         }
 
         private static void keluarAplikasi() {

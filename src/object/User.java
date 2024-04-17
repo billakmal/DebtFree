@@ -4,12 +4,12 @@
     import java.util.List;
 
     public class User {
+        private int id;
         private String name;
         private String email;
         private String password;
         private List<Pendapatan> daftarPendapatan;
         private List<Pengeluaran> daftarPengeluaran;
-        private Anggaran anggaran;
         private List<Hutang> daftarHutang;
         private List<Piutang> daftarPiutang;
 
@@ -39,8 +39,12 @@
             this.daftarPiutang.add(piutang);
         }
 
-        public void tampilkanAnggaran() {
-            System.out.println("Anggaran Anda adalah: " + anggaran.getJumlah());
+        public int getId(){
+            return this.id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
 
         public String getName() {
