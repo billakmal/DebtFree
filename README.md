@@ -1,18 +1,32 @@
-## Getting Started
+# DebtFree-Console
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+DebtFree-Console adalah aplikasi berbasis konsol sederhana yang dibangun dengan bahasa pemrograman Java. Aplikasi ini dirancang untuk membantu pengguna dalam mengelola keuangan mereka, termasuk pendapatan, pengeluaran, hutang, dan piutang.
 
-## Folder Structure
+## Fitur
 
-The workspace contains two folders by default, where:
+- Login dan sign up pengguna.
+- Manajemen pendapatan dan pengeluaran.
+- Perekaman hutang dan piutang.
+- Perhitungan saldo saat ini.
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+## Teknologi
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+- Bahasa pemrograman: Java
+- Text editor: Visual Studio Code
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+## Penggunaan
 
-## Dependency Management
+1. Pastikan Anda memiliki Java Development Kit (JDK) terinstal di komputer Anda.
+2. Unduh atau clone repositori ini ke komputer Anda.
+3. Buka repositori menggunakan Visual Studio Code atau text editor pilihan Anda.
+4. Kompilasi program dengan menjalankan perintah `javac DebtFreeApp.java` dari terminal di dalam direktori repositori.
+5. Jalankan program dengan perintah `java DebtFreeApp`.
+6. Ikuti instruksi yang ditampilkan di konsol untuk menggunakan aplikasi.
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+## Kontribusi
+
+Kontribusi selalu disambut baik! Untuk kontribusi pada proyek ini, silakan buat *pull request* yang menjelaskan perubahan yang Anda usulkan.
+
+## Lisensi
+
+Proyek ini dilisensikan di bawah lisensi [MIT](https://opensource.org/licenses/MIT).
